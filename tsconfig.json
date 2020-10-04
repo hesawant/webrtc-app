@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2017",
+        "outDir": "out",
+        "sourceMap": true,
+        "strict": true,
+        "typeRoots": []
+    },
+    "include": ["src/**/*"]
+}

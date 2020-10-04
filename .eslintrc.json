@@ -1,0 +1,4 @@
+{
+    "extends": "eslint:recommended",
+    "indent": ["error", "tab"]
+}
