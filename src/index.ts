@@ -2,6 +2,8 @@ import * as SocketIO from "socket.io";
 import * as HTTP from "http";
 import * as express from "express";
 
+import { RoomsAction, getRoomsController } from "./lib/rooms-controller";
+
 //@ts-ignore
 const app: express.Application = new express();
 
@@ -17,6 +19,16 @@ socketIO.on("connection", socket => {
 
     socket.on("disconnect", () => {
         console.log("a user disconnected.");
+
+        // TODO: hsawant implement removing a disconnected attendee from room.
+    });
+
+    socket.on(RoomsAction.JOIN_ROOM, (msgStr: string) => {
+        getRoomsController().joinRoom(socket, msgStr);
+    });
+
+    socket.on(RoomsAction.LEAVE_ROOM, (msgStr: string) => {
+        getRoomsController().leaveRoom(socket, msgStr);
     });
 
     socket.on("message", (msg: string) => {
