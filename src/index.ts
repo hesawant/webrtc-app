@@ -2,7 +2,7 @@ import * as SocketIO from "socket.io";
 import * as HTTP from "http";
 import * as express from "express";
 
-import { RoomsAction, getRoomsController } from "./lib/rooms-controller";
+import { RoomsAction, getRoomsController } from "@lib/rooms-controller";
 
 //@ts-ignore
 const app: express.Application = new express();

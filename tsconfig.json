@@ -1,11 +1,16 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "module": "commonjs",
         "target": "es2017",
         "outDir": "out",
+        "paths": {
+            "@common/*": ["common/*"],
+            "@lib/*": ["src/lib/*"]
+        },
         "sourceMap": true,
         "strict": true,
         "typeRoots": []
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "common/**/*"]
 }

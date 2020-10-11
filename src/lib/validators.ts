@@ -1,4 +1,4 @@
-import { JoinRoomMessage, LeaveRoomMessage } from "./type";
+import { JoinRoomMessage, LeaveRoomMessage } from "@common/type";
 
 export function parseJoinRoomMessage(msgString: string): JoinRoomMessage {
     const msg = JSON.parse(msgString) as JoinRoomMessage;
