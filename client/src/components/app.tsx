@@ -54,10 +54,17 @@ class App extends React.Component<Props, {}> {
     }
 }
 
-const mapStateToProps = (state: RootState): MappedProps => ({
-    selfVideoStream: state.peers.self.videoMediaStream,
-    peerVideoStream: state.peers.byId["peer-1"]?.videoMediaStream
-});
+const mapStateToProps = (state: RootState): MappedProps => {
+    let peerId = "";
+    if (Object.keys(state.peers.byId).length > 0) {
+        peerId = Object.keys(state.peers.byId)[0];
+    }
+
+    return {
+        selfVideoStream: state.peers.self.videoMediaStream,
+        peerVideoStream: state.peers.byId[peerId]?.videoMediaStream
+    };
+};
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     // TODO: Typecasting to any is a temp solution to TS compile errors.

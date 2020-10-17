@@ -1,8 +1,11 @@
-import { JoinRoomMessage, LeaveRoomMessage } from "@common/type";
+import { JoinRoomMessage, LeaveRoomMessage, RoomMessage } from "./type";
 
-export function parseJoinRoomMessage(msgString: string): JoinRoomMessage {
-    const msg = JSON.parse(msgString) as JoinRoomMessage;
+export function parseJoinRoomMessage(arg: any): JoinRoomMessage {
+    const msg = arg as JoinRoomMessage;
 
+    if (!msg) {
+        throw new Error("missing_args");
+    }
     if (!msg.name) {
         throw new Error("empty_room_name");
     } else if (!msg.attendeeName) {
@@ -12,10 +15,26 @@ export function parseJoinRoomMessage(msgString: string): JoinRoomMessage {
     return msg;
 }
 
-export function parseLeaveRoomMessage(msgString: string): LeaveRoomMessage {
-    const msg = JSON.parse(msgString) as LeaveRoomMessage;
+export function parseLeaveRoomMessage(arg: any): LeaveRoomMessage {
+    const msg = arg as LeaveRoomMessage;
 
-    if (!msg.id) {
+    if (!msg) {
+        throw new Error("missing_args");
+    } else if (!msg.id) {
+        throw new Error("missing_room_id");
+    } else if (!msg.attendeeId) {
+        throw new Error("missing_attendee_id");
+    }
+
+    return msg;
+}
+
+export function parseRoomMessage(arg: any): RoomMessage | null {
+    const msg = arg as RoomMessage;
+
+    if (!msg) {
+        return msg;
+    } else if (!msg.id) {
         throw new Error("missing_room_id");
     } else if (!msg.attendeeId) {
         throw new Error("missing_attendee_id");

@@ -1,4 +1,5 @@
 import {
+    SetSelfId,
     SetSelfMuted,
     SetSelfVideoEnabled,
     SetSelfAudioStream,
@@ -12,6 +13,13 @@ import {
     PeerStreamPayload,
     PeersActions
 } from "./peers-store";
+
+export function createSetSelfId(payload: string): SetSelfId {
+    return {
+        type: PeersActions.SET_SELF_ID,
+        payload
+    };
+}
 
 export function createSetSelfMutedAction(payload: boolean): SetSelfMuted {
     return {

@@ -1,4 +1,5 @@
 export interface Peer {
+    id: string;
     muted: boolean;
     videoEnabled: boolean;
     audioMediaStream?: MediaStream;
@@ -11,6 +12,7 @@ export interface PeersStore {
 }
 
 export enum PeersActions {
+    SET_SELF_ID = "SET_SELF_ID",
     SET_SELF_MUTED = "SET_SELF_MUTED",
     SET_SELF_VIDEO_ENABLED = "SET_SELF_VIDEO_ENABLED",
     SET_SELF_AUDIO_STREAM = "SET_SELF_AUDIO_STREAM",
@@ -24,6 +26,7 @@ export enum PeersActions {
 
 const initialState: PeersStore = {
     self: {
+        id: "",
         muted: false,
         videoEnabled: false,
         audioMediaStream: undefined,
@@ -31,6 +34,11 @@ const initialState: PeersStore = {
     },
     byId: {}
 };
+
+export interface SetSelfId {
+    type: PeersActions.SET_SELF_ID;
+    payload: string;
+}
 
 export interface SetSelfMuted {
     type: PeersActions.SET_SELF_MUTED;
@@ -88,6 +96,7 @@ export interface SetPeerVideoStream {
 }
 
 export type PeersActionsType =
+    | SetSelfId
     | SetSelfMuted
     | SetSelfVideoEnabled
     | SetSelfAudioStream
@@ -99,9 +108,18 @@ export type PeersActionsType =
 
 export const peersReducer = (state = initialState, action: PeersActionsType) => {
     switch (action.type) {
+        case PeersActions.SET_SELF_ID: {
+            return Object.assign({}, state, {
+                self: {
+                    ...state.self,
+                    id: action.payload
+                }
+            });
+        }
         case PeersActions.SET_SELF_MUTED: {
             return Object.assign({}, state, {
                 self: {
+                    ...state.self,
                     muted: action.payload
                 }
             });
@@ -109,6 +127,7 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
         case PeersActions.SET_SELF_VIDEO_ENABLED: {
             return Object.assign({}, state, {
                 self: {
+                    ...state.self,
                     videoEnabled: action.payload
                 }
             });
@@ -116,6 +135,7 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
         case PeersActions.SET_SELF_AUDIO_STREAM: {
             return Object.assign({}, state, {
                 self: {
+                    ...state.self,
                     audioMediaStream: action.payload
                 }
             });
@@ -123,6 +143,7 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
         case PeersActions.SET_SELF_VIDEO_STREAM: {
             return Object.assign({}, state, {
                 self: {
+                    ...state.self,
                     videoMediaStream: action.payload
                 }
             });
@@ -133,6 +154,7 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
                 byId: {
                     ...state.byId,
                     [action.payload.peerId]: {
+                        ...state.byId[action.payload.peerId],
                         videoMediaStream: action.payload.muted
                     }
                 }
@@ -143,6 +165,7 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
                 byId: {
                     ...state.byId,
                     [action.payload.peerId]: {
+                        ...state.byId[action.payload.peerId],
                         videoMediaStream: action.payload.videoEnabled
                     }
                 }
@@ -153,6 +176,7 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
                 byId: {
                     ...state.byId,
                     [action.payload.peerId]: {
+                        ...state.byId[action.payload.peerId],
                         videoMediaStream: action.payload.stream
                     }
                 }
@@ -163,12 +187,13 @@ export const peersReducer = (state = initialState, action: PeersActionsType) => 
                 byId: {
                     ...state.byId,
                     [action.payload.peerId]: {
+                        ...state.byId[action.payload.peerId],
                         videoMediaStream: action.payload.stream
                     }
                 }
             });
         }
         default:
-            return initialState;
+            return Object.assign({}, state);
     }
 };

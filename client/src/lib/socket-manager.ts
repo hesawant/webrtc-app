@@ -1,5 +1,7 @@
 import * as io from "socket.io-client";
 
+import { RoomsAction } from "./type";
+
 export class SocketManager {
     private socket: SocketIOClient.Socket;
 
@@ -11,11 +13,12 @@ export class SocketManager {
         });
     }
 
-    public send(msg: string) {
-        this.socket.emit("message", msg);
+    public send(type: RoomsAction, arg: any) {
+        this.socket.emit(type, arg);
     }
 
-    public recv(callback: (msg: string) => void) {
-        this.socket.on("message", (msg: string) => callback(msg));
+    public recv(type: RoomsAction, callback: (arg: any) => void) {
+        this.socket.on(type, (arg: any) => callback(arg));
+        console.log(type + " receive listener added");
     }
 }

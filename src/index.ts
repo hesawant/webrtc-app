@@ -2,7 +2,8 @@ import * as SocketIO from "socket.io";
 import * as HTTP from "http";
 import * as express from "express";
 
-import { RoomsAction, getRoomsController } from "@lib/rooms-controller";
+import { RoomsAction } from "./lib/type";
+import { getRoomsController } from "./lib/rooms-controller";
 
 //@ts-ignore
 const app: express.Application = new express();
@@ -15,25 +16,31 @@ app.get("/", (_req, res) => {
 });
 
 socketIO.on("connection", socket => {
-    console.log("a user connected");
+    console.log("a user connected ", socket.id);
 
-    socket.on("disconnect", () => {
-        console.log("a user disconnected.");
+    socket.on("disconnecting", () => {
+        console.log("a user disconnecting ", socket.id);
 
-        // TODO: hsawant implement removing a disconnected attendee from room.
+        const roomIds = socket.rooms;
+
+        Object.keys(roomIds).forEach(roomId => {
+            const room = getRoomsController().getRoomById(roomId);
+            if (room) {
+                room.removeAttendeeBySocketId(socket.id);
+            }
+        });
     });
 
-    socket.on(RoomsAction.JOIN_ROOM, (msgStr: string) => {
-        getRoomsController().joinRoom(socket, msgStr);
+    socket.on(RoomsAction.JOIN_ROOM, (arg: any) => {
+        getRoomsController().joinRoom(socket, arg);
     });
 
-    socket.on(RoomsAction.LEAVE_ROOM, (msgStr: string) => {
-        getRoomsController().leaveRoom(socket, msgStr);
+    socket.on(RoomsAction.LEAVE_ROOM, (arg: any) => {
+        getRoomsController().leaveRoom(socket, arg);
     });
 
-    socket.on("message", (msg: string) => {
-        // Broadcast to everyone except the sender
-        socket.broadcast.emit("message", msg);
+    socket.on(RoomsAction.MESSAGE, (msg: string) => {
+        getRoomsController().roomMessage(socket, msg);
     });
 });
 
